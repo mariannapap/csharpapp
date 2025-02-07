@@ -1,3 +1,4 @@
+using CSharpApp.Api.Middleware;
 using CSharpApp.Application.Products.Queries;
 using MediatR;
 
@@ -23,15 +24,24 @@ if (app.Environment.IsDevelopment())
 }
 
 //app.UseHttpsRedirection();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 var versionedEndpointRouteBuilder = app.NewVersionedApi();
 
-versionedEndpointRouteBuilder.MapGet("/api/v{version:apiVersion}/getproducts", async (IMediator mediator) =>
+versionedEndpointRouteBuilder.MapGet("/api/v{version:apiVersion}/getproducts", async (IMediator mediator, CancellationToken cancellationToken) =>
 {
-	var products = await mediator.Send(new GetAllProductsQuery());
+	var products = await mediator.Send(new GetAllProductsQuery(), cancellationToken);
 	return products;
 })
 .WithName("GetProducts")
+.HasApiVersion(1.0);
+
+versionedEndpointRouteBuilder.MapGet("/api/v{version:apiVersion}/products/{id}", async (int id, IMediator mediator, CancellationToken cancellationToken) =>
+{
+	var product = await mediator.Send(new GetProductByIdQuery { Id = id }, cancellationToken);
+	return product is not null ? Results.Ok(product) : Results.NotFound();
+})
+.WithName("GetProductById")
 .HasApiVersion(1.0);
 
 app.Run();
