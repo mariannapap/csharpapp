@@ -1,3 +1,6 @@
+using CSharpApp.Application.Products.Queries;
+using MediatR;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
@@ -23,12 +26,12 @@ if (app.Environment.IsDevelopment())
 
 var versionedEndpointRouteBuilder = app.NewVersionedApi();
 
-versionedEndpointRouteBuilder.MapGet("api/v{version:apiVersion}/getproducts", async (IProductsService productsService) =>
-    {
-        var products = await productsService.GetProducts();
-        return products;
-    })
-    .WithName("GetProducts")
-    .HasApiVersion(1.0);
+versionedEndpointRouteBuilder.MapGet("/api/v{version:apiVersion}/getproducts", async (IMediator mediator) =>
+{
+	var products = await mediator.Send(new GetAllProductsQuery());
+	return products;
+})
+.WithName("GetProducts")
+.HasApiVersion(1.0);
 
 app.Run();

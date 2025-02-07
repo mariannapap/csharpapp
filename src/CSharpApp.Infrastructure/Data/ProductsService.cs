@@ -17,13 +17,13 @@ public class ProductsService : IProductsService
 		_logger = logger;
 	}
 
-	public async Task<IReadOnlyCollection<Product?>> GetProducts()
+	public async Task<IReadOnlyCollection<Product?>> GetProducts(CancellationToken cancellationToken)
 	{
 		var client = _httpClientFactory.CreateClient(_restApiSettings.Name);
-		var response = await client.GetAsync(_restApiSettings.Products);
+		var response = await client.GetAsync(_restApiSettings.Products, cancellationToken);
 		response.EnsureSuccessStatusCode();
 
-		var content = await response.Content.ReadAsStringAsync();
+		var content = await response.Content.ReadAsStringAsync(cancellationToken);
 		var products = JsonSerializer.Deserialize<List<Product?>>(content) ?? [];
 
 		return products.AsReadOnly();

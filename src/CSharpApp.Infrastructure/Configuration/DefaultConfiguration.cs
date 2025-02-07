@@ -1,3 +1,5 @@
+using CSharpApp.Application.Products.Queries.Handlers;
+
 namespace CSharpApp.Infrastructure.Configuration;
 
 public static class DefaultConfiguration
@@ -31,6 +33,7 @@ public static class DefaultConfiguration
 			}
 		);
 		services.AddScoped<IProductsService, ProductsService>();
+		services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(GetAllProductsQueryHandler).Assembly));
 
 		return services;
 	}
