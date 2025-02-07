@@ -2,7 +2,8 @@ namespace CSharpApp.Core.Settings;
 
 public sealed class RestApiSettings
 {
-    public string? BaseUrl { get; set; }
+	public string Name { get; set; } = string.Empty;
+	public string? BaseUrl { get; set; }
     public string? Products { get; set; }
     public string? Categories { get; set; }
     public string? Auth { get; set; }
