@@ -54,6 +54,8 @@ if(app.Environment.IsDevelopment())
 }
 
 //app.UseHttpsRedirection();
+
+app.UseMiddleware<PerformanceLoggingMiddleware>();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 var versionedEndpointRouteBuilder = app.NewVersionedApi();
