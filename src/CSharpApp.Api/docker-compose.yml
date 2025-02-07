@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  csharpapp.api:
+    build:
+      context: ..
+      dockerfile: CSharpApp.Api/Dockerfile
+    container_name: csharpapp_api_container
+    environment:
+      ASPNETCORE_URLS: "http://+:5000"
+    ports:
+      - "5000:5000"
+    networks:
+      - localnetwork
+
+networks:
+  localnetwork:
+    driver: bridge
