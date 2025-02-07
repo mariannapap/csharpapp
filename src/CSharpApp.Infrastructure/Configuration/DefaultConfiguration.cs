@@ -1,4 +1,5 @@
 using CSharpApp.Application.Products.Queries.Handlers;
+using CSharpApp.Infrastructure.Data;
 
 namespace CSharpApp.Infrastructure.Configuration;
 
@@ -20,19 +21,28 @@ public static class DefaultConfiguration
 		if(string.IsNullOrEmpty(restApiSettings.BaseUrl))
 			throw new InvalidOperationException("BaseUrl cannot be null or empty.");
 
-		if(string.IsNullOrEmpty(restApiSettings.Name))
-			throw new InvalidOperationException("HttpClient Name cannot be null or empty.");
-
-		services.Configure<RestApiSettings>(configuration.GetSection(nameof(RestApiSettings)));
+		if(string.IsNullOrEmpty(restApiSettings.Products) || string.IsNullOrEmpty(restApiSettings.Categories))
+			throw new InvalidOperationException("HttpClient name cannot be null or empty.");
 
 		services.AddHttpClient(
-			restApiSettings.Name,
+			restApiSettings.Products,
 			client =>
 			{
 				client.BaseAddress = new Uri(restApiSettings.BaseUrl);
 			}
 		);
+		services.AddHttpClient(
+			restApiSettings.Categories,
+			client =>
+			{
+				client.BaseAddress = new Uri(restApiSettings.BaseUrl);
+			}
+		);
+
+		services.Configure<RestApiSettings>(configuration.GetSection(nameof(RestApiSettings)));
 		services.AddScoped<IProductsService, ProductsService>();
+		services.AddScoped<ICategoryService, CategoryService>();
+
 		services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(GetAllProductsQueryHandler).Assembly));
 
 		return services;

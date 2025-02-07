@@ -2,7 +2,7 @@
 using CSharpApp.Core.Exceptions;
 using CSharpApp.Core.Interfaces;
 
-namespace CSharpApp.Application.Products.Handlers;
+namespace CSharpApp.Application.Products.Queries.Handlers;
 
 public class GetProductByIdQueryHandler(
 	IProductsService productsService

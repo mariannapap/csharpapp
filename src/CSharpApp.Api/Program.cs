@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using CSharpApp.Api.Middleware;
+using CSharpApp.Application.Categories.Queries;
 using CSharpApp.Application.Products.Commands;
 using CSharpApp.Application.Products.Queries;
 using MediatR;
@@ -82,6 +83,15 @@ versionedEndpointRouteBuilder
 			await mediator.Send(command, cancellationToken)
 	)
 	.WithName("CreateProduct")
+	.HasApiVersion(1.0);
+
+versionedEndpointRouteBuilder
+	.MapGet(
+		"/api/v{version:apiVersion}/categories",
+		async (IMediator mediator, CancellationToken cancellationToken) =>
+			await mediator.Send(new GetAllCategoriesQuery(), cancellationToken)
+	)
+	.WithName("GetAllCategories")
 	.HasApiVersion(1.0);
 
 app.Run();

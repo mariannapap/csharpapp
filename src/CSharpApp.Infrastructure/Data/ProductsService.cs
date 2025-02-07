@@ -2,7 +2,7 @@ using CSharpApp.Application.Products.Commands;
 using CSharpApp.Core.Dtos.Requests;
 using CSharpApp.Core.Exceptions;
 
-namespace CSharpApp.Application.Products;
+namespace CSharpApp.Infrastructure.Data;
 
 public class ProductsService : IProductsService
 {
@@ -20,7 +20,7 @@ public class ProductsService : IProductsService
 
 	public async Task<Product?> GetProductById(int id, CancellationToken cancellationToken)
 	{
-		var client = _httpClientFactory.CreateClient(_restApiSettings.Name);
+		var client = _httpClientFactory.CreateClient(_restApiSettings.Products!);
 		var response = await client.GetAsync(_restApiSettings.Products + "/" + id, cancellationToken);
 		var content = await HandleResponse(response, cancellationToken);
 		var product = JsonSerializer.Deserialize<Product?>(content);
@@ -30,7 +30,7 @@ public class ProductsService : IProductsService
 
 	public async Task<IReadOnlyCollection<Product?>> GetProducts(CancellationToken cancellationToken)
 	{
-		var client = _httpClientFactory.CreateClient(_restApiSettings.Name);
+		var client = _httpClientFactory.CreateClient(_restApiSettings.Products!);
 		var response = await client.GetAsync(_restApiSettings.Products, cancellationToken);
 		var content = await HandleResponse(response, cancellationToken);
 		var products = JsonSerializer.Deserialize<List<Product?>>(content) ?? [];
@@ -40,7 +40,7 @@ public class ProductsService : IProductsService
 
 	public async Task<Product?> CreateProduct(CreateProductRequest request, CancellationToken cancellationToken)
 	{
-		var client = _httpClientFactory.CreateClient(_restApiSettings.Name);
+		var client = _httpClientFactory.CreateClient(_restApiSettings.Products!);
 		var productJson = JsonSerializer.Serialize(request);
 		var content = new StringContent(productJson, System.Text.Encoding.UTF8, "application/json");
 		var response = await client.PostAsync(_restApiSettings.Products, content, cancellationToken);
