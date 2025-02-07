@@ -1,3 +1,5 @@
+using CSharpApp.Application.Products.Commands;
+using CSharpApp.Core.Dtos.Requests;
 using CSharpApp.Core.Exceptions;
 
 namespace CSharpApp.Application.Products;
@@ -34,6 +36,19 @@ public class ProductsService : IProductsService
 		var products = JsonSerializer.Deserialize<List<Product?>>(content) ?? [];
 
 		return products.AsReadOnly();
+	}
+
+	public async Task<Product?> CreateProduct(CreateProductRequest request, CancellationToken cancellationToken)
+	{
+		var client = _httpClientFactory.CreateClient(_restApiSettings.Name);
+		var productJson = JsonSerializer.Serialize(request);
+		var content = new StringContent(productJson, System.Text.Encoding.UTF8, "application/json");
+		var response = await client.PostAsync(_restApiSettings.Products, content, cancellationToken);
+
+		var responseBody = await HandleResponse(response, cancellationToken);
+		var product = JsonSerializer.Deserialize<Product>(responseBody);
+
+		return product;
 	}
 
 	#region Private Methods
