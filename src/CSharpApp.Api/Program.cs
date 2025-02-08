@@ -1,8 +1,10 @@
 using Asp.Versioning;
+using Autofac.Core;
 using CSharpApp.Api.Middleware;
 using CSharpApp.Application.Categories.Queries;
 using CSharpApp.Application.Products.Commands;
 using CSharpApp.Application.Products.Queries;
+using CSharpApp.Application.User.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,6 +42,8 @@ builder.Services.AddSwaggerGen(options =>
 	options.DocInclusionPredicate((_, api) => !string.IsNullOrWhiteSpace(api.GroupName));
 	options.TagActionsBy(api => new List<string> { api.GroupName });
 });
+
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 
@@ -91,6 +95,18 @@ versionedEndpointRouteBuilder
 			await mediator.Send(new GetAllCategoriesQuery(), cancellationToken)
 	)
 	.WithName("GetAllCategories")
+	.HasApiVersion(1.0);
+
+versionedEndpointRouteBuilder
+	.MapGet(
+		"/api/v{version:apiVersion}/profile",
+		async (IMediator mediator, CancellationToken cancellationToken) =>
+		{
+			var profile = await mediator.Send(new GetUserProfileQuery(), cancellationToken);
+			return Results.Ok(profile);
+		}
+	)
+	.WithName("GetProfile")
 	.HasApiVersion(1.0);
 
 app.Run();

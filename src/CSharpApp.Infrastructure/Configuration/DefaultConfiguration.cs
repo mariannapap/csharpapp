@@ -21,7 +21,9 @@ public static class DefaultConfiguration
 		if(string.IsNullOrEmpty(restApiSettings.BaseUrl))
 			throw new InvalidOperationException("BaseUrl cannot be null or empty.");
 
-		if(string.IsNullOrEmpty(restApiSettings.Products) || string.IsNullOrEmpty(restApiSettings.Categories))
+		if(string.IsNullOrEmpty(restApiSettings.Products)
+			|| string.IsNullOrEmpty(restApiSettings.Categories)
+			|| string.IsNullOrEmpty(restApiSettings.Auth))
 			throw new InvalidOperationException("HttpClient name cannot be null or empty.");
 
 		services.AddHttpClient(
@@ -38,10 +40,21 @@ public static class DefaultConfiguration
 				client.BaseAddress = new Uri(restApiSettings.BaseUrl);
 			}
 		);
+		services.AddHttpClient(
+			restApiSettings.Auth,
+			client =>
+			{
+				client.BaseAddress = new Uri(restApiSettings.BaseUrl);
+			}
+		);
 
 		services.Configure<RestApiSettings>(configuration.GetSection(nameof(RestApiSettings)));
 		services.AddScoped<IProductsService, ProductsService>();
 		services.AddScoped<ICategoryService, CategoryService>();
+		services.AddScoped<IAuthService, AuthService>();
+
+		services.Configure<TokenCacheConfig>(configuration.GetSection(nameof(TokenCacheConfig)));
+		services.AddScoped<ITokenCacheService, TokenCacheService>();
 
 		services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(GetAllProductsQueryHandler).Assembly));
 
