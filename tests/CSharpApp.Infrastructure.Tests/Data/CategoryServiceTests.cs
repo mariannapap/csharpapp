@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
 
-namespace CSharpApp.Infrastructure.Tests;
+namespace CSharpApp.Infrastructure.Tests.Data;
 
 public class CategoryServiceTests
 {
