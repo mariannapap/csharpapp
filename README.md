@@ -41,3 +41,22 @@ We must measure and log the performance of the requests. Create a middleware to 
 * Add docker support.
 * Using CQRS pattern will be considered as a strong plus.
 * The attached collections (postman/insomnia) will help you with the requests.
+
+## Running the Service with Docker Compose
+
+To build and run the service using Docker Compose, follow these steps:
+
+### Step 1: Build the Docker Images
+
+Navigate to the directory containing the `docker-compose.yml` file and run the following command to build the Docker images:
+
+```
+docker-compose build
+```
+### Step 2: Run the Services
+
+After the images have been built, you can start the services by running:
+
+```
+docker-compose up
+```
