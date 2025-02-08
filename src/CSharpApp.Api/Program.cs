@@ -1,5 +1,4 @@
 using Asp.Versioning;
-using Autofac.Core;
 using CSharpApp.Api.Middleware;
 using CSharpApp.Application.Categories.Queries;
 using CSharpApp.Application.Products.Commands;
@@ -12,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
 builder.Logging.ClearProviders().AddSerilog(logger);
+var apiVersion = new ApiVersion(1, 0);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -22,7 +22,7 @@ builder.Services.AddProblemDetails();
 builder.Services.AddApiVersioning(options =>
 {
 	options.AssumeDefaultVersionWhenUnspecified = true;
-	options.DefaultApiVersion = new ApiVersion(1, 0);
+	options.DefaultApiVersion = apiVersion;
 	options.ReportApiVersions = true;
 })
 .AddApiExplorer(options =>
@@ -83,7 +83,10 @@ versionedEndpointRouteBuilder
 	.MapPost(
 		"/api/v{version:apiVersion}/products",
 		async ([FromBody] CreateProductCommand command, IMediator mediator, CancellationToken cancellationToken) =>
-			await mediator.Send(command, cancellationToken)
+		{
+			var id = await mediator.Send(command, cancellationToken);
+			return Results.Created("/api/" + apiVersion.ToString("'v'VVV") + "/products/" + id, id);
+		}
 	)
 	.WithName("CreateProduct")
 	.HasApiVersion(1.0);
@@ -101,10 +104,7 @@ versionedEndpointRouteBuilder
 	.MapGet(
 		"/api/v{version:apiVersion}/profile",
 		async (IMediator mediator, CancellationToken cancellationToken) =>
-		{
-			var profile = await mediator.Send(new GetUserProfileQuery(), cancellationToken);
-			return Results.Ok(profile);
-		}
+			await mediator.Send(new GetUserProfileQuery(), cancellationToken)
 	)
 	.WithName("GetProfile")
 	.HasApiVersion(1.0);
