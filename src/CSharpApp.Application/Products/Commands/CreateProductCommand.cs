@@ -2,9 +2,9 @@
 
 public class CreateProductCommand : IRequest<int>
 {
-	public required string Title { get; set; }
-	public decimal Price { get; set; }
-	public required string Description { get; set; }
-	public int CategoryId { get; set; }
-	public required List<string> Images { get; set; }
+	public required string Title { get; init; }
+	public decimal Price { get; init; }
+	public required string Description { get; init; }
+	public int CategoryId { get; init; }
+	public required List<string> Images { get; init; }
 }

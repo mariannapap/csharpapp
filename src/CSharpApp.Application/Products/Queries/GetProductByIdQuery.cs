@@ -2,5 +2,5 @@
 
 public class GetProductByIdQuery : IRequest<Product>
 {
-    public int Id { get; set; }
+    public int Id { get; init; }
 }
