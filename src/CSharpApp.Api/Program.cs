@@ -17,7 +17,6 @@ var apiVersion = new ApiVersion(1, 0);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddDefaultConfiguration();
-builder.Services.AddHttpConfiguration();
 builder.Services.AddProblemDetails();
 builder.Services.AddApiVersioning(options =>
 {
