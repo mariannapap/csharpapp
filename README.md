@@ -60,3 +60,9 @@ After the images have been built, you can start the services by running:
 ```
 docker-compose up
 ```
+
+## API Documentation
+
+When running the application with **Docker Compose**, you can access the Swagger UI at:
+
+[http://localhost:5000/swagger/index.html](http://localhost:5000/swagger/index.html)
