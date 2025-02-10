@@ -19,7 +19,7 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
 				request.Id,
 				new()
 				{
-					Name = request.Name,
+					Title = request.Title,
 					Price = request.Price,
 					Description = request.Description
 				},

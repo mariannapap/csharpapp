@@ -26,7 +26,7 @@ public class UpdateProductCommandHandlerTests
 		var command = new UpdateProductCommand()
 		{
 			Id = 1,
-			Name = "Updated Product",
+			Title = "Updated Product",
 			Price = 100.0m,
 			Description = "Updated Description"
 		};
@@ -59,7 +59,7 @@ public class UpdateProductCommandHandlerTests
 		var command = new UpdateProductCommand()
 		{
 			Id = 1,
-			Name = "Updated Product",
+			Title = "Updated Product",
 			Price = 100.0m,
 			Description = "Updated Description"
 		};
