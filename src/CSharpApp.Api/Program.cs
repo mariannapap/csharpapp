@@ -39,7 +39,7 @@ builder.Services.AddSwaggerGen(options =>
 		Version = "v1"
 	});
 	options.DocInclusionPredicate((_, api) => !string.IsNullOrWhiteSpace(api.GroupName));
-	options.TagActionsBy(api => new List<string> { api.GroupName });
+	options.TagActionsBy(api => [api.GroupName!]);
 });
 
 builder.Services.AddMemoryCache();

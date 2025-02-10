@@ -30,7 +30,7 @@ public class CreateProductCommandHandlerTests
 			Description = "Description 1",
 			CategoryId = 1,
 			Price = 100,
-			Images = new List<string> { "image1.jpg", "image2.jpg" }
+			Images = ["image1.jpg", "image2.jpg"]
 		};
 		_mockProductsService
 			.Setup(service => service.CreateProduct(It.IsAny<CreateProductRequest>(), It.IsAny<CancellationToken>()))
@@ -53,7 +53,7 @@ public class CreateProductCommandHandlerTests
 			Description = "Description 1",
 			CategoryId = 1,
 			Price = 100,
-			Images = new List<string> { "image1.jpg", "image2.jpg" }
+			Images = ["image1.jpg", "image2.jpg"]
 		};
 		_mockProductsService
 			.Setup(service => service.CreateProduct(It.IsAny<CreateProductRequest>(), It.IsAny<CancellationToken>()))
@@ -75,7 +75,7 @@ public class CreateProductCommandHandlerTests
 			Description = "Description 1",
 			CategoryId = 1,
 			Price = 100,
-			Images = new List<string> { "image1.jpg", "image2.jpg" }
+			Images = ["image1.jpg", "image2.jpg"]
 		};
 		_mockProductsService
 			.Setup(service => service.CreateProduct(It.IsAny<CreateProductRequest>(), It.IsAny<CancellationToken>()))

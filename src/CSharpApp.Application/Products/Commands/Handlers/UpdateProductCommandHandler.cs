@@ -3,25 +3,18 @@ using CSharpApp.Core.Interfaces;
 
 namespace CSharpApp.Application.Products.Commands.Handlers;
 
-public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, int>
+public class UpdateProductCommandHandler(IProductsService productsService) : IRequestHandler<UpdateProductCommand, int>
 {
-	private readonly IProductsService _productsService;
-
-	public UpdateProductCommandHandler(IProductsService productsService)
-	{
-		_productsService = productsService;
-	}
-
 	public async Task<int> Handle(
 		UpdateProductCommand request,
 		CancellationToken cancellationToken
-	) => (await _productsService.UpdateProduct(
+	) => (await productsService.UpdateProduct(
 				request.Id,
 				new()
 				{
 					Title = request.Title,
 					Price = request.Price,
-					Description = request.Description
+					Images = request.Images
 				},
 				cancellationToken
 			)

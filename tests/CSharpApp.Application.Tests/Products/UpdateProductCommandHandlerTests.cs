@@ -28,14 +28,14 @@ public class UpdateProductCommandHandlerTests
 			Id = 1,
 			Title = "Updated Product",
 			Price = 100.0m,
-			Description = "Updated Description"
+			Images = ["https://placeimg.com/640/480/any"]
 		};
 		var updatedProduct = new Product
 		{
 			Id = 1,
 			Title = "Updated Product",
 			Price = 100.0m,
-			Description = "Updated Description"
+			Images = ["https://placeimg.com/640/480/any"]
 		};
 
 		_productsServiceMock
@@ -61,7 +61,7 @@ public class UpdateProductCommandHandlerTests
 			Id = 1,
 			Title = "Updated Product",
 			Price = 100.0m,
-			Description = "Updated Description"
+			Images = ["https://placeimg.com/640/480/any"]
 		};
 
 		_productsServiceMock
