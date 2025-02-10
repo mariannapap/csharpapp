@@ -3,17 +3,17 @@
 public class CreateProductRequest
 {
 	[JsonPropertyName("title")]
-	public string Title { get; set; }
+	public required string Title { get; init; }
 
 	[JsonPropertyName("price")]
-	public decimal Price { get; set; }
+	public decimal Price { get; init; }
 
 	[JsonPropertyName("description")]
-	public string Description { get; set; }
+	public required string Description { get; init; }
 
 	[JsonPropertyName("images")]
-	public List<string> Images { get; set; } = [];
+	public List<string> Images { get; init; } = [];
 
 	[JsonPropertyName("categoryId")]
-	public int CategoryId { get; set; }
+	public int CategoryId { get; init; }
 }

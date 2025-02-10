@@ -37,4 +37,15 @@ public class ProductsService(
 		var responseBody = await response.HandleResponse(cancellationToken);
 		return JsonSerializer.Deserialize<Product>(responseBody);
 	}
+
+	public async Task<Product?> UpdateProduct(int id, UpdateProductRequest request, CancellationToken cancellationToken)
+	{
+		var client = _httpClientFactory.CreateClient(_restApiSettings.Products!);
+		var productJson = JsonSerializer.Serialize(request);
+		var content = new StringContent(productJson, System.Text.Encoding.UTF8, "application/json");
+		var response = await client.PutAsync(_restApiSettings.Products + "/" + id, content, cancellationToken);
+
+		var responseBody = await response.HandleResponse(cancellationToken);
+		return JsonSerializer.Deserialize<Product?>(responseBody);
+	}
 }

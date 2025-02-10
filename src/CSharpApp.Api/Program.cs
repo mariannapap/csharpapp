@@ -91,6 +91,21 @@ versionedEndpointRouteBuilder
 	.HasApiVersion(1.0);
 
 versionedEndpointRouteBuilder
+	.MapPut(
+		"/api/v{version:apiVersion}/products/{id}",
+		async (int id, [FromBody] UpdateProductCommand command, IMediator mediator, CancellationToken cancellationToken) =>
+		{
+			if(id != command.Id)
+				return Results.BadRequest();
+
+			await mediator.Send(command, cancellationToken);
+			return Results.NoContent();
+		}
+	)
+	.WithName("UpdateProduct")
+	.HasApiVersion(1.0);
+
+versionedEndpointRouteBuilder
 	.MapGet(
 		"/api/v{version:apiVersion}/categories",
 		async (IMediator mediator, CancellationToken cancellationToken) =>

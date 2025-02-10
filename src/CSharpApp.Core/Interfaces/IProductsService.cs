@@ -9,4 +9,6 @@ public interface IProductsService
 	public Task<Product?> GetProductById(int id, CancellationToken cancellationToken);
 
 	public Task<Product?> CreateProduct(CreateProductRequest request, CancellationToken cancellationToken);
+
+	public Task<Product?> UpdateProduct(int id, UpdateProductRequest request, CancellationToken cancellationToken);
 }
