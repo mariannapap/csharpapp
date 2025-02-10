@@ -1,5 +1,6 @@
 using CSharpApp.Application.Products.Queries.Handlers;
 using CSharpApp.Infrastructure.Data;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CSharpApp.Infrastructure.Configuration;
 
@@ -9,44 +10,46 @@ public static class DefaultConfiguration
 	{
 		var serviceProvider = services.BuildServiceProvider();
 
-		var configuration = serviceProvider
-			.GetService<IConfiguration>()
-			?? throw new InvalidOperationException("Configuration cannot be null.");
+		var configuration = serviceProvider.GetService<IConfiguration>()
+			?? throw new ArgumentNullException(nameof(RestApiSettings), "Configuration cannot be null.");
 
-		var restApiSettings = configuration
-			.GetSection(nameof(RestApiSettings))
-			.Get<RestApiSettings>()
-			?? throw new InvalidOperationException("RestApiSettings are not configured properly.");
+		var restApiSettings = configuration.GetSection(nameof(RestApiSettings)).Get<RestApiSettings>() switch
+		{
+			{ BaseUrl.Length: > 0, Products.Length: > 0, Categories.Length: > 0, Auth.Length: > 0 } s => s,
+			_ => throw new ArgumentNullException(nameof(RestApiSettings), $"Missing configuration from {nameof(RestApiSettings)}")
+		};
 
-		if(string.IsNullOrEmpty(restApiSettings.BaseUrl))
-			throw new InvalidOperationException("BaseUrl cannot be null or empty.");
-
-		if(string.IsNullOrEmpty(restApiSettings.Products)
-			|| string.IsNullOrEmpty(restApiSettings.Categories)
-			|| string.IsNullOrEmpty(restApiSettings.Auth))
-			throw new InvalidOperationException("HttpClient name cannot be null or empty.");
+		var httpClientSettings = configuration.GetSection(nameof(HttpClientSettings)).Get<HttpClientSettings>() switch
+		{
+			{ RetryCount: >= 0, SleepDuration: >= 0, LifeTime: > 0 } s => s,
+			_ => throw new ArgumentNullException(nameof(RestApiSettings), $"Missing configuration from {nameof(HttpClientSettings)}")
+		};
 
 		services.AddHttpClient(
-			restApiSettings.Products,
+			restApiSettings.Products!,
 			client =>
 			{
-				client.BaseAddress = new Uri(restApiSettings.BaseUrl);
+				client.BaseAddress = new Uri(restApiSettings.BaseUrl!);
 			}
-		);
+		)
+		.AddPolicyHandler(HttpClientPolicies.GetRetryPolicy(httpClientSettings))
+		.SetHandlerLifetime(TimeSpan.FromMinutes(httpClientSettings.LifeTime));
+
 		services.AddHttpClient(
-			restApiSettings.Categories,
+			restApiSettings.Categories!,
 			client =>
 			{
-				client.BaseAddress = new Uri(restApiSettings.BaseUrl);
+				client.BaseAddress = new Uri(restApiSettings.BaseUrl!);
 			}
-		);
+		).AddPolicyHandler(HttpClientPolicies.GetRetryPolicy(httpClientSettings));
+
 		services.AddHttpClient(
-			restApiSettings.Auth,
+			restApiSettings.Auth!,
 			client =>
 			{
-				client.BaseAddress = new Uri(restApiSettings.BaseUrl);
+				client.BaseAddress = new Uri(restApiSettings.BaseUrl!);
 			}
-		);
+		).AddPolicyHandler(HttpClientPolicies.GetRetryPolicy(httpClientSettings));
 
 		services.Configure<RestApiSettings>(configuration.GetSection(nameof(RestApiSettings)));
 		services.AddScoped<IProductsService, ProductsService>();
